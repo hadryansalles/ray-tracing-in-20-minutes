@@ -12,24 +12,24 @@ class Ray():
         return self.origin + t*self.direction
 
 class Camera():
-    def __init__(self, center, rotation, width, height, focal_length):
+    def __init__(self, center, euler_angles, width, height, focal_length):
         self.center = center
         self.width  = width
         self.height = height
         self.focal_length = focal_length
-        rotation = glm.radians(rotation)
+        euler_angles = glm.radians(euler_angles)
         matrix = glm.mat4()
-        matrix = glm.rotate(matrix, rotation.x, vec3(1, 0, 0))
-        matrix = glm.rotate(matrix, rotation.y, vec3(0, 1, 0))
-        matrix = glm.rotate(matrix, rotation.z, vec3(0, 0, 1))
+        matrix = glm.rotate(matrix, euler_angles.x, vec3(1, 0, 0))
+        matrix = glm.rotate(matrix, euler_angles.y, vec3(0, 1, 0))
+        matrix = glm.rotate(matrix, euler_angles.z, vec3(0, 0, 1))
         self.right  = glm.vec4(1, 0, 0, 1) * matrix
         self.up     = glm.vec4(0, 1, 0, 1) * matrix
         self.front  = glm.vec4(0, 0, 1, 1) * matrix
 
-    def get_ray(self, x, y):
+    def get_ray(self, j, i):
         direction  = self.front * self.focal_length
-        direction += self.right*(x/self.width - 0.5)
-        direction += self.up*(self.height/self.width)*(y/self.height - 0.5)
+        direction += self.right*(j/self.width - 0.5)
+        direction += self.up*(self.height/self.width)*(i/self.height - 0.5)
         return Ray(self.center, vec3(direction))
 
 class Hit():
@@ -69,10 +69,10 @@ class PointLight():
         self.intensity = intensity
     
     def intensity_at(self, hit):
-        direction = hit.position - self.position
+        direction = self.position - hit.position 
         distance  = glm.length(direction)
         direction = glm.normalize(direction)
-        cos_theta = glm.dot(-direction, hit.normal)
+        cos_theta = glm.dot(direction, hit.normal)
         return max(0, self.intensity*cos_theta/distance**2)
 
 class Scene():
@@ -92,16 +92,13 @@ class Scene():
     
     def trace(self, ray):
         closest_hit = self.closest(ray)
-        if(closest_hit):
+        if closest_hit:
             intensity = self.ambient_light
-            # add each light contribution
             for light in self.lights:
-                # test if the hit point is in shadow
                 light_ray = Ray(light.position, closest_hit.position - light.position)
                 light_hit = self.closest(light_ray)
                 if(light_hit and light_hit.object == closest_hit.object):
                     intensity += light.intensity_at(closest_hit)
-            # clamp the total intensity to 1
             return closest_hit.object.color*min(intensity, 1)
         else:
             return self.background
@@ -124,7 +121,7 @@ def render(scene, camera):
 
 if __name__=="__main__":
     scene = Scene(vec3(26, 27, 33), 0.12)
-    camera = Camera(vec3(0, 5, -8), vec3(-10, 5, 0), 1280, 720, 0.8)
+    camera = Camera(vec3(0, 5, -8), vec3(-10, 5, 0), 800, 600, 0.7)
 
     light = PointLight(vec3(-1.3, 8.4, 0), 20)
     scene.lights.append(light)
