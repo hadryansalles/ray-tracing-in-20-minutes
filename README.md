@@ -1,4 +1,4 @@
-Reposityory of my blog post where I explain the basics of ray tracing and show how you can implement the hello world of ray tracng in Python, which is a very simple program to render scenes containing spheres, lights and shadows.
+Repository of my blog post where I explain the basics of ray tracing and show how you can implement the hello world of Ray Tracing in using Python, which is a very simple program to render scenes containing spheres, lights and shadows.
 
 https://hadryans.github.io/ray-tracing-20-minutes/
 
