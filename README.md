@@ -1,6 +1,6 @@
 Repository of my blog post where I explain the basics of Ray Tracing and show how you can implement the hello world of Ray Tracing using Python.
 
-https://hadryans.github.io/ray-tracing-20-minutes/
+https://hadryansalles.github.io/ray-tracing-20-minutes/
 
 Some samples:
 
